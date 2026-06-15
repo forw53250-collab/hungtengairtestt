@@ -85,8 +85,8 @@ label{
 /* ⭐ 重點：電腦螢幕自適應圖片 */
 .result-photo{
     width:100%;
-    max-width:420px;      /* 電腦最大不要超過420px */
-    max-height:70vh;      /* 不超過螢幕高度70% */
+    -width:420px;      /* 電腦最大不要超過420px */
+    -height:70vh;      /* 不超過螢幕高度70% */
     height:auto;
     display:block;
     margin:20px auto;
@@ -94,7 +94,7 @@ label{
     object-fit:contain;
 }
 .start-page{
-    max-width:700px;
+    -width:700px;
     margin:auto;
     background:white;
     padding:20px;
@@ -271,21 +271,20 @@ function showResult(){
     document.querySelectorAll(".question").forEach(q=>{
         q.style.display = "none";
     });
-
 let max = Math.max(...Object.values(scores));
 
-// 找出最高分有哪些人
+// 找出所有最高分
 let topTypes = Object.keys(scores).filter(
     key => scores[key] === max
 );
 
-// ✔ 平手 → E
+// ✔ 核心規則：只要平手 → E
 let winner;
 
-if (topTypes.length > 1) {
-    winner = "E";
+if (topTypes.length === 1) {
+    winner = topTypes[0]; // 唯一最高才成立
 } else {
-    winner = topTypes[0];
+    winner = "E"; // 只要有平手（含2個以上）→ E
 }
 
     document.getElementById("result").style.display = "block";
