@@ -306,7 +306,7 @@ function showResult(){
     console.log('🔄 開始傳送資料...', payload);
 
     // ✅ 使用 mode: 'no-cors' 解決 Chrome CORS 問題
-    fetch("https://script.google.com/macros/s/AKfycbw_hsAcE6X_jcTgfTUpekkYcXf1_NkHqkKrAuyf75uGkJgxQikzp9S4Ey7c1NdeECZW/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzRKM8r9AyBMjb3BKvhT8Z2T47xwkh5sUib4lU-UCssrn9RDU8LjEWLZiKL9bMvJPrc/exec", {
         method: "POST",
         mode: 'no-cors',
         headers: {
@@ -316,11 +316,11 @@ function showResult(){
     })
     .then(response => {
         console.log('✅ 請求已成功發送到後台');
-        showStatus('✅ 感謝你完成測驗！結果已儲存', 'success');
+        showStatus('✅ 感謝您完成測驗，長按儲存結果！', 'success');
     })
     .catch(error => {
         console.error('❌ 發送失敗:', error);
-        showStatus('✅ 感謝你完成測驗！結果已儲存', 'success');
+        showStatus('✅ 感謝你完成測驗，長按儲存結果！', 'success');
     });
 }
 
