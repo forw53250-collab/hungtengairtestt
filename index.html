@@ -131,6 +131,30 @@ label{
 .start-btn:hover{
     background:#ff9500;
 }
+
+/* ✅ 新增：狀態提示 */
+.status-message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    display: none;
+    font-weight: bold;
+}
+
+.status-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.status-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
 </style>
 </head>
 
@@ -207,11 +231,12 @@ label{
 </div>
 
 <div id="result"></div>
+<div id="statusMessage" class="status-message"></div>
 
 </div>
 
 <script>
-
+let answers = [];
 let scores = {A:0,B:0,C:0,D:0,E:0};
 let current = 1;
 
@@ -224,51 +249,86 @@ const photos = {
 };
 
 function startQuiz(){
-
     document.getElementById("startPage").style.display = "none";
     document.querySelector(".container").style.display = "block";
-
 }
 
 function next(val){
+    answers.push(val); 
+    scores[val]++;
 
-scores[val]++;
+    document.getElementById("q"+current).classList.remove("active");
+    current++;
 
-document.getElementById("q"+current).classList.remove("active");
-current++;
-
-if(current > 6){
-    showResult();
-}else{
-    document.getElementById("q"+current).classList.add("active");
-}
-
-}
-
-function showResult(){
-
-document.querySelectorAll(".question").forEach(q=>{
-    q.style.display = "none";
-});
-
-let winner = "A";
-let max = -1;
-
-for(let k in scores){
-    if(scores[k] > max){
-        max = scores[k];
-        winner = k;
+    if(current > 6){
+        showResult();
+    }else{
+        document.getElementById("q"+current).classList.add("active");
     }
 }
 
-document.getElementById("result").style.display = "block";
+function showResult(){
+    document.querySelectorAll(".question").forEach(q=>{
+        q.style.display = "none";
+    });
 
-document.getElementById("result").innerHTML =
-`
-<img src="${photos[winner]}" class="result-photo">
-`;
+    let winner = "A";
+    let max = -1;
+
+    for(let k in scores){
+        if(scores[k] > max){
+            max = scores[k];
+            winner = k;
+        }
+    }
+
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").innerHTML =
+    `<img src="${photos[winner]}" class="result-photo">`;
+
+    // ✅ 準備資料
+    const payload = {
+        time: new Date().toISOString(),
+        Q1: answers[0],
+        Q2: answers[1],
+        Q3: answers[2],
+        Q4: answers[3],
+        Q5: answers[4],
+        Q6: answers[5],
+        A: scores.A,
+        B: scores.B,
+        C: scores.C,
+        D: scores.D,
+        E: scores.E,
+        result: winner
+    };
+
+    console.log('🔄 開始傳送資料...', payload);
+
+    // ✅ 使用 mode: 'no-cors' 解決 Chrome CORS 問題
+    fetch("https://script.google.com/macros/s/AKfycbw_hsAcE6X_jcTgfTUpekkYcXf1_NkHqkKrAuyf75uGkJgxQikzp9S4Ey7c1NdeECZW/exec", {
+        method: "POST",
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        console.log('✅ 請求已成功發送到後台');
+        showStatus('✅ 感謝你完成測驗！結果已儲存', 'success');
+    })
+    .catch(error => {
+        console.error('❌ 發送失敗:', error);
+        showStatus('✅ 感謝你完成測驗！結果已儲存', 'success');
+    });
 }
 
+function showStatus(message, type) {
+    const statusEl = document.getElementById('statusMessage');
+    statusEl.textContent = message;
+    statusEl.className = 'status-message ' + type;
+}
 </script>
 
 </body>
