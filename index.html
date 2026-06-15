@@ -272,15 +272,21 @@ function showResult(){
         q.style.display = "none";
     });
 
-    let winner = "A";
-    let max = -1;
+let max = Math.max(...Object.values(scores));
 
-    for(let k in scores){
-        if(scores[k] > max){
-            max = scores[k];
-            winner = k;
-        }
-    }
+// 找出最高分有哪些人
+let topTypes = Object.keys(scores).filter(
+    key => scores[key] === max
+);
+
+// ✔ 平手 → E
+let winner;
+
+if (topTypes.length > 1) {
+    winner = "E";
+} else {
+    winner = topTypes[0];
+}
 
     document.getElementById("result").style.display = "block";
     document.getElementById("result").innerHTML =
